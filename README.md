@@ -106,6 +106,9 @@ Supported client events:
 ## Deployment
 
 - Deployed URL: `TBD` (set this after deploy)
+- For Render (or any cloud host), do not use local defaults from `.env.example` for data services.
+- Set `DATABASE_URL` and `REDIS_URL` to your managed service connection strings.
+- `REDIS_URL=redis://localhost:6379` is for local development only and will fail in Render with `ECONNREFUSED`.
 
 ## Notes
 

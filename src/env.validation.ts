@@ -41,5 +41,26 @@ export function envValidation(config: Record<string, unknown>): EnvVars {
     throw new Error(`Environment validation failed: ${errors.toString()}`);
   }
 
+  const nodeEnv = String(config.NODE_ENV ?? '').toLowerCase();
+  if (nodeEnv === 'production') {
+    const loopbackHosts = new Set(['localhost', '127.0.0.1', '::1']);
+    const loopbackVars = (['DATABASE_URL', 'REDIS_URL'] as const).filter((variableName) => {
+      const raw = validated[variableName];
+      try {
+        return loopbackHosts.has(new URL(raw).hostname);
+      } catch {
+        return false;
+      }
+    });
+
+    if (loopbackVars.length > 0) {
+      throw new Error(
+        `Environment validation failed: ${loopbackVars.join(
+          ', ',
+        )} point to localhost while NODE_ENV=production. Use managed service URLs in deployment.`,
+      );
+    }
+  }
+
   return validated;
 }
