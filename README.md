@@ -109,6 +109,9 @@ Supported client events:
 - For Render (or any cloud host), do not use local defaults from `.env.example` for data services.
 - Set `DATABASE_URL` and `REDIS_URL` to your managed service connection strings.
 - `REDIS_URL=redis://localhost:6379` is for local development only and will fail in Render with `ECONNREFUSED`.
+- Render build command: `npm install && npm run build:render`
+- Render start command: `npm run start:prod`
+- Do not run Prisma commands in this project (it uses Drizzle, not Prisma).
 
 ## Notes
 
