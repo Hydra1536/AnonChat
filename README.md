@@ -34,16 +34,16 @@ cp .env.example .env
 
 ## Run locally
 
-1. Start infrastructure:
+1. Start API + infrastructure:
 
 ```bash
 docker compose up -d
 ```
 
-2. Install dependencies:
+2. Verify services are running:
 
 ```bash
-npm install
+docker ps
 ```
 
 3. Apply schema:
@@ -51,20 +51,26 @@ npm install
 Option A (recommended):
 
 ```bash
-npm run drizzle:push
+docker exec -it anonchat-api sh -lc "npm run drizzle:push"
 ```
 
 Option B:
 
-Run `drizzle/0000_init.sql` manually in PostgreSQL.
-
-4. Start server:
+Run `drizzle/0000_init.sql` manually in PostgreSQL:
 
 ```bash
-npm run start:dev
+Get-Content .\drizzle\0000_init.sql | docker exec -i anonchat-postgres-1 psql -U postgres -d anon_chat
+```
+
+4. Follow API logs (optional):
+
+```bash
+docker logs -f anonchat-api
 ```
 
 Server starts at `http://localhost:3000` by default.
+
+Note: in Docker Compose, the API runs via `npm run start:dev`.
 
 ## API auth
 
