@@ -2,17 +2,23 @@
 
 Backend implementation of the interview task using NestJS, PostgreSQL + Drizzle ORM, Redis, and Socket.io.
 
-## Tech
+## Tech Stack
 
-- NestJS
-- PostgreSQL
-- Drizzle ORM
-- Redis
-- Socket.io
-- TypeScript
+- Runtime: Node.js
+- Language: TypeScript
+- Framework: NestJS
+- Database: PostgreSQL (`pg`)
+- ORM: Drizzle ORM + Drizzle Kit
+- Realtime transport: Socket.IO
+- Realtime scaling: `@socket.io/redis-adapter`
+- Cache/session store: Redis (`ioredis`)
+- Validation: `class-validator`, `class-transformer`
+- Reactive utilities: RxJS
 
 ## Base URL and API prefix
 
+- Render base API URL: `https://anonchat-xd16.onrender.com/api/v1`
+- Render endpoint format: `https://anonchat-xd16.onrender.com/api/v1/<endpoint>`
 - API prefix: `/api/v1`
 - WebSocket namespace: `/chat`
 
@@ -74,7 +80,7 @@ Note: in Docker Compose, the API runs via `npm run start:dev`.
 
 ## API auth
 
-- `POST /api/v1/login` is public.
+- `POST /api/v1/login` is public and creates a user automatically if it does not exist.
 - Every other HTTP endpoint requires:
 
 ```http
@@ -91,6 +97,12 @@ Connect via:
 ws://host/chat?token=<sessionToken>&roomId=<roomId>
 ```
 
+Render example:
+
+```text
+wss://anonchat-xd16.onrender.com/chat?token=<sessionToken>&roomId=<roomId>
+```
+
 Supported server events:
 
 - `room:joined`
@@ -105,18 +117,18 @@ Supported client events:
 
 ## Deployment
 
-- Deployed URL: `TBD` (set this after deploy)
+- Deployed URL: `https://anonchat-xd16.onrender.com`
+- API base URL after deployment: `https://anonchat-xd16.onrender.com/api/v1`
 - For Render (or any cloud host), do not use local defaults from `.env.example` for data services.
 - Set `DATABASE_URL` and `REDIS_URL` to your managed service connection strings.
 - `REDIS_URL=redis://localhost:6379` is for local development only and will fail in Render with `ECONNREFUSED`.
 - Render build command: `npm install && npm run build:render`
 - Render start command: `npm run start:prod`
 - Do not run Prisma commands in this project (it uses Drizzle, not Prisma).
+- Public health checks: `GET /` and `GET /health`
 
 ## Notes
 
-- REST responses are wrapped as:
-  - success: `{ "success": true, "data": ... }`
-  - error: `{ "success": false, "error": { "code", "message" } }`
+- REST responses are wrapped as success `{ "success": true, "data": ... }` or error `{ "success": false, "error": { "code", "message" } }`.
 - REST `POST /rooms/:id/messages` persists the message first, then publishes to Redis.
 - WebSocket gateway listens to Redis pub/sub channels and broadcasts room-scoped events.
