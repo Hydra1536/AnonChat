@@ -1,6 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
+import { DatabaseBootstrapService } from './database-bootstrap.service';
 import { DatabaseService } from './database.service';
 
 @Global()
@@ -16,6 +17,7 @@ import { DatabaseService } from './database.service';
       },
     },
     DatabaseService,
+    DatabaseBootstrapService,
   ],
   exports: [DatabaseService],
 })

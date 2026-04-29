@@ -4,6 +4,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { envValidation } from './env.validation';
+import { HealthModule } from './health/health.module';
 import { RedisModule } from './redis/redis.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { SessionAuthGuard } from './shared/session-auth.guard';
@@ -17,6 +18,7 @@ import { WebsocketModule } from './websocket/websocket.module';
     }),
     DatabaseModule,
     RedisModule,
+    HealthModule,
     AuthModule,
     RoomsModule,
     WebsocketModule,
